@@ -36,9 +36,9 @@ df2[(df2$Brand=="Haribo")&(df2$Shape=="Bear"),'WeightChange'] =
 df2[(df2$Brand=="Haribo")&(df2$Shape=="Worm"),'WeightChange'] = 
   df2[(df2$Brand=="Haribo")&(df2$Shape=="Worm"),'Weight'] / haribo_worm_start_weight * 100
 df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'WeightChange'] = 
-  df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'Weight'] / haribo_bear_start_weight * 100
+  df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'Weight'] / target_bear_start_weight * 100
 df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'WeightChange'] = 
-  df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'Weight'] / haribo_worm_start_weight * 100
+  df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'Weight'] / target_worm_start_weight * 100
 
 # Initial ANOVA
 fit = lm(WeightChange~(Brand+Shape+Salt)^3, data=df2)
@@ -86,3 +86,5 @@ abline(h=0)
 lsd = LSD.test(aov_fit, trt=c("Brand", "Salt", "Shape"), p.adj="bonferroni")
 print(lsd)
 plot(lsd)
+
+
