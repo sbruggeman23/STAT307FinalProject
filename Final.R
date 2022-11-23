@@ -32,13 +32,13 @@ df2 = data.frame(Brand=brand2, Salt=salt2, Shape=shape2, Weight=weights)
 # Using instead of raw change in weight so that it's fair to compare the worms and bears
 df2['WeightChange'] = 0
 df2[(df2$Brand=="Haribo")&(df2$Shape=="Bear"),'WeightChange'] = 
-  df2[(df2$Brand=="Haribo")&(df2$Shape=="Bear"),'Weight'] / haribo_bear_start_weight * 100
+  (df2[(df2$Brand=="Haribo")&(df2$Shape=="Bear"),'Weight'] / haribo_bear_start_weight - 1) * 100
 df2[(df2$Brand=="Haribo")&(df2$Shape=="Worm"),'WeightChange'] = 
-  df2[(df2$Brand=="Haribo")&(df2$Shape=="Worm"),'Weight'] / haribo_worm_start_weight * 100
+  (df2[(df2$Brand=="Haribo")&(df2$Shape=="Worm"),'Weight'] / haribo_worm_start_weight - 1) * 100
 df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'WeightChange'] = 
-  df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'Weight'] / target_bear_start_weight * 100
+  (df2[(df2$Brand=="Target")&(df2$Shape=="Bear"),'Weight'] / target_bear_start_weight - 1) * 100
 df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'WeightChange'] = 
-  df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'Weight'] / target_worm_start_weight * 100
+  (df2[(df2$Brand=="Target")&(df2$Shape=="Worm"),'Weight'] / target_worm_start_weight - 1) * 100
 
 # Initial ANOVA
 fit = lm(WeightChange~(Brand+Shape+Salt)^3, data=df2)
@@ -62,18 +62,18 @@ abline(h=0)
 
 # Transformation to make data more normal - taking square root of response
 # Second model after transformation
-df2$TransWeightChange = df2$WeightChange^0.5
+df2$TransWeightChange = df2$WeightChange^.5
 fit = lm(TransWeightChange~(Brand+Shape+Salt)^3, data=df2)
 aov_fit = aov(fit)
 summary(aov_fit)
 
 ### Assumptions
 # Normality
-shapiro.test(fit$residuals) # Still doesn't look great, but the p-value is over 0.05
+shapiro.test(fit$residuals) # Looks worse, none of the transformations tried helped
 qqnorm(fit$residuals) 
 qqline(fit$residuals)
 
-# Homoscedasticity - all p-values now over 0.05
+# Homoscedasticity - all p-values still over 0.05
 leveneTest(aov_fit$residuals~Brand, data=df2)
 leveneTest(aov_fit$residuals~Shape, data=df2)
 leveneTest(aov_fit$residuals~Salt, data=df2)
@@ -83,6 +83,10 @@ plot(fit$fitted.values, fit$residuals)
 abline(h=0)
 
 # Post-Hoc
+# Going back to original model
+fit = lm(WeightChange~(Brand+Shape+Salt)^3, data=df2)
+aov_fit = aov(fit)
+
 lsd = LSD.test(aov_fit, trt=c("Brand", "Salt", "Shape"), p.adj="bonferroni")
 print(lsd)
 plot(lsd)
