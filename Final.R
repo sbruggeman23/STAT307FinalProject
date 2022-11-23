@@ -7,8 +7,6 @@ replicate = rep(1:3, each=8)
 df = cbind(brand, salinity, shape, bears, replicate)
 df
 
-# Records of methodology in texts from Savannah (add to notes later)
-
 # Starting weights
 haribo_bear_start_weight=2
 haribo_worm_start_weight=9
