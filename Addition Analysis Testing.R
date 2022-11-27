@@ -41,16 +41,26 @@ library(randomForest)
 rf = randomForest(WeightChange~Brand+Shape+Salt, data=df2)
 varImpPlot(rf, main="Variable Importance Plot")
 
+# Mixed effects model
+library(VCA)
+mixed_fit = lm(WeightChange~(Brand+Shape+Salt)^3, data=df2)
+anovaVCA(WeightChange~Brand+Shape+Salt, Data=df2)
+
+varPlot(WeightChange~(Salt+Brand+Shape), Data=df2, type=3, 
+        YLabel=list(text="Percentage Change in Mass (g)", cex=0.6),
+        ylim=list(c(-50,400), c(-10, 100)))
+
 # Clustering
 df3 = df2[,c("Brand", "Salt", "Shape", "WeightChange")]
 df3$Brand = 1*(df3$Brand == "Target")
 df3$Salt = 1*(df3$Salt == "Salt")
 df3$Shape = 1*(df3$Shape == "Worm")
-df3$WeightChange = scale(df3$WeightChange)
+df3 = scale(df3)
 
 k = 4
 clustered = kmeans(df3, centers = k)
 clustered
+df2[,'cluster'] = clustered$cluster
 
 # Hierarchical clustering
 d = dist(df3, method='euclidean') # Create distance matrix

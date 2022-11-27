@@ -92,3 +92,19 @@ print(lsd)
 plot(lsd)
 
 
+# Box-cox transformation
+bc <- boxcox(weights ~ (brand2+shape2+salt2)^3) x <-c((brand2+shape2+salt2)^3) y <-c(weights) (lambda <- bc$x[which.max(bc$y)])
+
+df3 <- lm(((weights^(-0.06060606-1))/-0.06060606) ~ (brand2+shape2+salt2)^3)
+shapiro.test(df3$residuals)
+op <- par(pty = "s", mfrow = c(1, 2))
+qqnorm(df3$residuals)
+qqline(df3$residuals)
+qqnorm(df3$residuals)
+qqline(df3$residuals)
+par(op)
+
+aov_df3 = aov(df3)
+summary(aov_df3)
+
+
